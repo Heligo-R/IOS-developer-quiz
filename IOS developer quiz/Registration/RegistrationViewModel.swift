@@ -8,21 +8,15 @@
 import Foundation
 import Combine
 
-enum TFValidation: Equatable {
-    case valid
-    case invalid(String)
-    case empty
-}
-
 protocol PRegistrationViewModel: ObservableObject {
     var username: String { get set }
     var password: String { get set }
     var confirmPassword: String { get set }
     
     var isRegistrationDisabled: Bool { get }
-    var usernameValidation: TFValidation { get }
-    var passwordValidation: TFValidation { get }
-    var confirmPasswordValidation: TFValidation { get }
+    var usernameValidation: Validation { get }
+    var passwordValidation: Validation { get }
+    var confirmPasswordValidation: Validation { get }
     
     func register()
 }
@@ -36,9 +30,9 @@ final class RegistrationViewModel: PRegistrationViewModel {
         !(usernameValidation == .valid && passwordValidation == .valid && confirmPasswordValidation == .valid)
     }
     
-    @Published var usernameValidation: TFValidation = .empty
-    @Published var passwordValidation: TFValidation = .empty
-    @Published var confirmPasswordValidation: TFValidation = .empty
+    @Published var usernameValidation: Validation = .none
+    @Published var passwordValidation: Validation = .none
+    @Published var confirmPasswordValidation: Validation = .none
     
     private let validator: Validator
     private var disposeSet = Set<AnyCancellable>()

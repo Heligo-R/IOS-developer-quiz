@@ -7,6 +7,12 @@
 
 import Combine
 
+enum Validation: Equatable {
+    case valid
+    case invalid(String)
+    case none
+}
+
 final class Validator {
     private var validationService: PValidationService
     
@@ -14,47 +20,45 @@ final class Validator {
         validationService = service
     }
     
-    func validateUsernameRemotely(_ username: String) -> AnyPublisher<TFValidation, Never> {
-        if username != "" {
-            return validationService.checkUsername(username).map { result -> TFValidation in
-                if result.valid {
-                    return .valid
-                } else if let message = result.message {
-                    return .invalid(message)
-                } else {
-                    return .empty
-                }
-            }
-            .catch { error -> Just<TFValidation> in
-                switch error {
-                case .error(let message):
-                    return Just(.invalid(message))
-                }
-            }
-            .eraseToAnyPublisher()
-        } else {
-            return Just(.empty)
+    func validateUsernameRemotely(_ username: String) -> AnyPublisher<Validation, Never> {
+        guard username != "" else {
+            return Just(.none)
                 .eraseToAnyPublisher()
         }
+        return validationService.checkUsername(username).map { result -> Validation in
+            if result.valid {
+                return .valid
+            } else if let message = result.message {
+                return .invalid(message)
+            } else {
+                return .none
+            }
+        }
+        .catch { error -> Just<Validation> in
+            switch error {
+            case .error(let message):
+                return Just(.invalid(message))
+            }
+        }
+        .eraseToAnyPublisher()
     }
     
-    func validatePassword(_ password: String) -> TFValidation {
-        switch true {
-        case password == "":
-            return .empty
-        case password.count <= 8:
+    func validatePassword(_ password: String) -> Validation {
+        if password == "" {
+            return .none
+        } else if password.count <= 8 {
             return .invalid("Password length must be greater than 8 chars")
-        case checkPasswordForWellKnownPasses(password) != true:
+        } else if checkPasswordForWellKnownPasses(password) != true {
             return .invalid("Well-known passwords are prohibited")
-        default:
+        } else {
             return .valid
         }
     }
     
-    func validateConfirmPassword(confirmPassword: String, password: String) -> TFValidation {
+    func validateConfirmPassword(confirmPassword: String, password: String) -> Validation {
         switch confirmPassword {
         case "":
-            return .empty
+            return .none
         case password:
             return .valid
         default:
@@ -64,6 +68,6 @@ final class Validator {
     
     func checkPasswordForWellKnownPasses(_ password: String) -> Bool {
         let prohibitedWellKnownPasswords = ["password", "admin"]
-        return prohibitedWellKnownPasswords.allSatisfy({ !password.contains($0) })
+        return prohibitedWellKnownPasswords.allSatisfy { !password.contains($0) }
     }
 }

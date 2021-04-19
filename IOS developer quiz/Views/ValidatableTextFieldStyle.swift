@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ValidatableTextFieldStyle: TextFieldStyle {
-    var validation: TFValidation
+    var validation: Validation
     var borderColor: Color {
         switch validation {
         case .invalid(_):
