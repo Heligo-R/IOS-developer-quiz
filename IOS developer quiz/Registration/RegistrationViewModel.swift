@@ -54,26 +54,8 @@ final class RegistrationViewModel: PRegistrationViewModel {
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .removeDuplicates()
             .flatMap { [weak self] value -> AnyPublisher<TFValidation, Never> in
-                if value == "" {
-                    return Just(.empty)
-                        .eraseToAnyPublisher()
-                } else if let strongSelf = self {
-                    return strongSelf.registrationService.checkUsername(value).map { result -> TFValidation in
-                        if result.valid {
-                            return .valid
-                        } else if let message = result.message {
-                            return .invalid(message)
-                        } else {
-                            return .empty
-                        }
-                    }
-                    .catch { error -> Just<TFValidation> in
-                        switch error {
-                        case .error(let message):
-                            return Just(.invalid(message))
-                        }
-                    }
-                    .eraseToAnyPublisher()
+                if value != "", let strongSelf = self {
+                    return strongSelf.validateUsernameRemotely(value)
                 } else {
                     return Just(.empty)
                         .eraseToAnyPublisher()
@@ -83,20 +65,11 @@ final class RegistrationViewModel: PRegistrationViewModel {
             .store(in: &disposeSet)
         
         $password
-            .map { [weak self] value -> TFValidation in
-            switch true {
-            case value == "":
-                return .empty
-            case value.count <= 8:
-                return .invalid("Password length must be greater than 8 chars")
-            case self?.checkPassword(value) != true:
-                return .invalid("Well-known passwords are prohibited")
-            default:
-                return .valid
+            .map { [weak self] value in
+                (self?.validatePassword(value) ?? TFValidation.empty)
             }
-        }
-        .assign(to: \.passwordValidation, on: self)
-        .store(in: &disposeSet)
+            .assign(to: \.passwordValidation, on: self)
+            .store(in: &disposeSet)
         
         $verifyPassword
             .combineLatest($password)
@@ -114,7 +87,39 @@ final class RegistrationViewModel: PRegistrationViewModel {
             .store(in: &disposeSet)
     }
     
-    private func checkPassword(_ password: String) -> Bool {
+    private func validateUsernameRemotely(_ username: String) -> AnyPublisher<TFValidation, Never> {
+        registrationService.checkUsername(username).map { result -> TFValidation in
+            if result.valid {
+                return .valid
+            } else if let message = result.message {
+                return .invalid(message)
+            } else {
+                return .empty
+            }
+        }
+        .catch { error -> Just<TFValidation> in
+            switch error {
+            case .error(let message):
+                return Just(.invalid(message))
+            }
+        }
+        .eraseToAnyPublisher()
+    }
+    
+    private func validatePassword(_ password: String) -> TFValidation {
+        switch true {
+        case password == "":
+            return .empty
+        case password.count <= 8:
+            return .invalid("Password length must be greater than 8 chars")
+        case checkPasswordForWellKnownPasses(password) != true:
+            return .invalid("Well-known passwords are prohibited")
+        default:
+            return .valid
+        }
+    }
+        
+    private func checkPasswordForWellKnownPasses(_ password: String) -> Bool {
         let prohibitedWellKnownPasswords = ["password", "admin"]
         return prohibitedWellKnownPasswords.allSatisfy({ !password.contains($0) })
     }
