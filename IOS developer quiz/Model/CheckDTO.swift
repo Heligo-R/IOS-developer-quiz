@@ -11,7 +11,7 @@ enum CheckError: Error {
     case error(String)
 }
 
-struct CheckDTO {
+struct CheckDTO: Decodable {
     let valid: Bool
     let message: String?
 }

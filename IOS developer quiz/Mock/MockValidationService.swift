@@ -8,7 +8,7 @@
 import Foundation
 import Combine
 
-final class MockRegistrationService: PRegistrationService {
+final class MockValidationService: PValidationService {
     func checkUsername(_ username: String) -> AnyPublisher<CheckDTO, CheckError> {
         Just(username).map { value -> CheckDTO in
             let isValid = value.count > 5

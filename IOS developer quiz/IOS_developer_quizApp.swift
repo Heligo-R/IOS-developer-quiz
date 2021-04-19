@@ -11,7 +11,7 @@ import SwiftUI
 struct IOS_developer_quizApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView<RegistrationViewModel>().environmentObject(RegistrationViewModel(service: MockRegistrationService()))
+            ContentView<RegistrationViewModel>().environmentObject(RegistrationViewModel(service: MockValidationService()))
         }
     }
 }

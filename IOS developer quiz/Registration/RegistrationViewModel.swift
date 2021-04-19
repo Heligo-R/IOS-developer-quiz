@@ -40,11 +40,11 @@ final class RegistrationViewModel: PRegistrationViewModel {
     @Published var passwordValidation: TFValidation = .empty
     @Published var verifyPasswordValidation: TFValidation = .empty
     
-    private let registrationService: PRegistrationService
+    private let validator: Validator
     private var disposeSet = Set<AnyCancellable>()
     
-    init(service: PRegistrationService) {
-        self.registrationService = service
+    init(service: PValidationService) {
+        validator = Validator(service: service)
         
         subscribeOnFieldChanges()
     }
@@ -53,75 +53,20 @@ final class RegistrationViewModel: PRegistrationViewModel {
         $username
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .removeDuplicates()
-            .flatMap { [weak self] value -> AnyPublisher<TFValidation, Never> in
-                if value != "", let strongSelf = self {
-                    return strongSelf.validateUsernameRemotely(value)
-                } else {
-                    return Just(.empty)
-                        .eraseToAnyPublisher()
-                }
-            }
+            .flatMap(validator.validateUsernameRemotely)
             .assign(to: \.usernameValidation, on: self)
             .store(in: &disposeSet)
         
         $password
-            .map(validatePassword)
+            .map(validator.validatePassword)
             .assign(to: \.passwordValidation, on: self)
             .store(in: &disposeSet)
         
         $verifyPassword
             .combineLatest($password)
-            .map(validateVerifyPassword)
+            .map(validator.validateVerifyPassword)
             .assign(to: \.verifyPasswordValidation, on: self)
             .store(in: &disposeSet)
-    }
-    
-    private func validateUsernameRemotely(_ username: String) -> AnyPublisher<TFValidation, Never> {
-        registrationService.checkUsername(username).map { result -> TFValidation in
-            if result.valid {
-                return .valid
-            } else if let message = result.message {
-                return .invalid(message)
-            } else {
-                return .empty
-            }
-        }
-        .catch { error -> Just<TFValidation> in
-            switch error {
-            case .error(let message):
-                return Just(.invalid(message))
-            }
-        }
-        .eraseToAnyPublisher()
-    }
-    
-    private func validatePassword(_ password: String) -> TFValidation {
-        switch true {
-        case password == "":
-            return .empty
-        case password.count <= 8:
-            return .invalid("Password length must be greater than 8 chars")
-        case checkPasswordForWellKnownPasses(password) != true:
-            return .invalid("Well-known passwords are prohibited")
-        default:
-            return .valid
-        }
-    }
-    
-    private func validateVerifyPassword(verifyPassword: String, password: String) -> TFValidation {
-        switch verifyPassword {
-        case "":
-            return .empty
-        case password:
-            return .valid
-        default:
-            return .invalid("Passwords must match")
-        }
-    }
-        
-    private func checkPasswordForWellKnownPasses(_ password: String) -> Bool {
-        let prohibitedWellKnownPasswords = ["password", "admin"]
-        return prohibitedWellKnownPasswords.allSatisfy({ !password.contains($0) })
     }
     
     func register() {

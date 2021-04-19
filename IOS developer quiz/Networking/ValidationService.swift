@@ -8,6 +8,6 @@
 import Foundation
 import Combine
 
-protocol PRegistrationService {
+protocol PValidationService {
     func checkUsername(_ username: String) -> AnyPublisher<CheckDTO, CheckError>
 }

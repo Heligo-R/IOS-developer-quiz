@@ -94,6 +94,6 @@ struct ContentView<VM: PRegistrationViewModel>: View {
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        ContentView<RegistrationViewModel>().environmentObject( RegistrationViewModel(service: MockRegistrationService()))
+        ContentView<RegistrationViewModel>().environmentObject( RegistrationViewModel(service: MockValidationService()))
     }
 }
