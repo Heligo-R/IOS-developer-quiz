@@ -5,7 +5,6 @@
 //  Created by Oleg on 19.04.2021.
 //
 
-import Foundation
 import Combine
 
 final class Validator {
@@ -52,8 +51,8 @@ final class Validator {
         }
     }
     
-    func validateVerifyPassword(verifyPassword: String, password: String) -> TFValidation {
-        switch verifyPassword {
+    func validateConfirmPassword(confirmPassword: String, password: String) -> TFValidation {
+        switch confirmPassword {
         case "":
             return .empty
         case password:
