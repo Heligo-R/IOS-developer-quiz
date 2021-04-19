@@ -8,15 +8,21 @@
 import Foundation
 import Combine
 
+enum TFValidation: Equatable {
+    case valid
+    case invalid(String)
+    case empty
+}
+
 protocol PRegistrationViewModel: ObservableObject {
     var username: String { get set }
     var password: String { get set }
     var verifyPassword: String { get set }
     
     var isRegistrationDisabled: Bool { get }
-    var usernameValidation: Validation { get }
-    var passwordValidation: Validation { get }
-    var verifyPasswordValidation: Validation { get }
+    var usernameValidation: TFValidation { get }
+    var passwordValidation: TFValidation { get }
+    var verifyPasswordValidation: TFValidation { get }
     
     func register()
 }
@@ -30,9 +36,9 @@ final class RegistrationViewModel: PRegistrationViewModel {
         !(usernameValidation == .valid && passwordValidation == .valid && verifyPasswordValidation == .valid)
     }
     
-    @Published var usernameValidation: Validation = .empty
-    @Published var passwordValidation: Validation = .empty
-    @Published var verifyPasswordValidation: Validation = .empty
+    @Published var usernameValidation: TFValidation = .empty
+    @Published var passwordValidation: TFValidation = .empty
+    @Published var verifyPasswordValidation: TFValidation = .empty
     
     private let registrationService: PRegistrationService
     private var disposeSet = Set<AnyCancellable>()
@@ -47,12 +53,12 @@ final class RegistrationViewModel: PRegistrationViewModel {
         $username
             .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
             .removeDuplicates()
-            .flatMap { [weak self] value -> AnyPublisher<Validation, Never> in
+            .flatMap { [weak self] value -> AnyPublisher<TFValidation, Never> in
                 if value == "" {
                     return Just(.empty)
                         .eraseToAnyPublisher()
                 } else if let strongSelf = self {
-                    return strongSelf.registrationService.checkUsername(value).map { result -> Validation in
+                    return strongSelf.registrationService.checkUsername(value).map { result -> TFValidation in
                         if result.valid {
                             return .valid
                         } else if let message = result.message {
@@ -61,7 +67,7 @@ final class RegistrationViewModel: PRegistrationViewModel {
                             return .empty
                         }
                     }
-                    .catch { error -> Just<Validation> in
+                    .catch { error -> Just<TFValidation> in
                         switch error {
                         case .error(let message):
                             return Just(.invalid(message))
@@ -77,7 +83,7 @@ final class RegistrationViewModel: PRegistrationViewModel {
             .store(in: &disposeSet)
         
         $password
-            .map { [weak self] value -> Validation in
+            .map { [weak self] value -> TFValidation in
             switch true {
             case value == "":
                 return .empty
@@ -94,7 +100,7 @@ final class RegistrationViewModel: PRegistrationViewModel {
         
         $verifyPassword
             .combineLatest($password)
-            .map { (verifyPassword, password) -> Validation in
+            .map { (verifyPassword, password) -> TFValidation in
                 switch verifyPassword {
                 case "":
                     return .empty

@@ -17,14 +17,8 @@ struct GradientView: View {
     }
 }
 
-enum Validation: Equatable {
-    case valid
-    case invalid(String)
-    case empty
-}
-
 struct ValidatableTextFieldStyle: TextFieldStyle {
-    var validation: Validation
+    var validation: TFValidation
     var borderColor: Color {
         switch validation {
         case .invalid(_):
