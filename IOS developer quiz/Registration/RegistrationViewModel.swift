@@ -65,24 +65,13 @@ final class RegistrationViewModel: PRegistrationViewModel {
             .store(in: &disposeSet)
         
         $password
-            .map { [weak self] value in
-                (self?.validatePassword(value) ?? TFValidation.empty)
-            }
+            .map(validatePassword)
             .assign(to: \.passwordValidation, on: self)
             .store(in: &disposeSet)
         
         $verifyPassword
             .combineLatest($password)
-            .map { (verifyPassword, password) -> TFValidation in
-                switch verifyPassword {
-                case "":
-                    return .empty
-                case password:
-                    return .valid
-                default:
-                    return .invalid("Passwords must match")
-                }
-            }
+            .map(validateVerifyPassword)
             .assign(to: \.verifyPasswordValidation, on: self)
             .store(in: &disposeSet)
     }
@@ -116,6 +105,17 @@ final class RegistrationViewModel: PRegistrationViewModel {
             return .invalid("Well-known passwords are prohibited")
         default:
             return .valid
+        }
+    }
+    
+    private func validateVerifyPassword(verifyPassword: String, password: String) -> TFValidation {
+        switch verifyPassword {
+        case "":
+            return .empty
+        case password:
+            return .valid
+        default:
+            return .invalid("Passwords must match")
         }
     }
         
