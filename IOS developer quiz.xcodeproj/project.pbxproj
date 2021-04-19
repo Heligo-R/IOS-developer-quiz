@@ -7,19 +7,27 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7C0A7124262D813B00134708 /* RedistrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7123262D813B00134708 /* RedistrationService.swift */; };
+		7C0A7128262D817F00134708 /* MockRegistrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A7127262D817F00134708 /* MockRegistrationService.swift */; };
+		7C0A712C262D86D100134708 /* CheckDTO.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C0A712B262D86D100134708 /* CheckDTO.swift */; };
 		7C4D4B51262B0A19004B0038 /* IOS_developer_quizApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D4B50262B0A19004B0038 /* IOS_developer_quizApp.swift */; };
 		7C4D4B53262B0A19004B0038 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C4D4B52262B0A19004B0038 /* ContentView.swift */; };
 		7C4D4B55262B0A1C004B0038 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C4D4B54262B0A1C004B0038 /* Assets.xcassets */; };
 		7C4D4B58262B0A1C004B0038 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C4D4B57262B0A1C004B0038 /* Preview Assets.xcassets */; };
+		7C90CC8E262CC8C400060F62 /* RegistrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C90CC8D262CC8C400060F62 /* RegistrationViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		7C0A7123262D813B00134708 /* RedistrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RedistrationService.swift; sourceTree = "<group>"; };
+		7C0A7127262D817F00134708 /* MockRegistrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockRegistrationService.swift; sourceTree = "<group>"; };
+		7C0A712B262D86D100134708 /* CheckDTO.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckDTO.swift; sourceTree = "<group>"; };
 		7C4D4B4D262B0A19004B0038 /* IOS developer quiz.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "IOS developer quiz.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7C4D4B50262B0A19004B0038 /* IOS_developer_quizApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IOS_developer_quizApp.swift; sourceTree = "<group>"; };
 		7C4D4B52262B0A19004B0038 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7C4D4B54262B0A1C004B0038 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7C4D4B57262B0A1C004B0038 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		7C4D4B59262B0A1C004B0038 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7C90CC8D262CC8C400060F62 /* RegistrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,11 +41,34 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		7C0A7121262D77E000134708 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				7C0A7123262D813B00134708 /* RedistrationService.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		7C0A7122262D7FA500134708 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				7C0A7127262D817F00134708 /* MockRegistrationService.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
+		7C0A712A262D86BE00134708 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				7C0A712B262D86D100134708 /* CheckDTO.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
 		7C4D4B44262B0A19004B0038 = {
 			isa = PBXGroup;
 			children = (
 				7C4D4B4F262B0A19004B0038 /* IOS developer quiz */,
-				7C4D4B4E262B0A19004B0038 /* Products */,
 			);
 			sourceTree = "<group>";
 		};
@@ -47,16 +78,22 @@
 				7C4D4B4D262B0A19004B0038 /* IOS developer quiz.app */,
 			);
 			name = Products;
+			path = ..;
 			sourceTree = "<group>";
 		};
 		7C4D4B4F262B0A19004B0038 /* IOS developer quiz */ = {
 			isa = PBXGroup;
 			children = (
+				7C0A712A262D86BE00134708 /* Model */,
+				7C0A7122262D7FA500134708 /* Mock */,
+				7C0A7121262D77E000134708 /* Networking */,
 				7C4D4B50262B0A19004B0038 /* IOS_developer_quizApp.swift */,
-				7C4D4B52262B0A19004B0038 /* ContentView.swift */,
-				7C4D4B54262B0A1C004B0038 /* Assets.xcassets */,
 				7C4D4B59262B0A1C004B0038 /* Info.plist */,
+				7C4D4B52262B0A19004B0038 /* ContentView.swift */,
+				7C90CC95262CCB2700060F62 /* Registration */,
+				7C61F0AE262C5ABB009EED98 /* Resources */,
 				7C4D4B56262B0A1C004B0038 /* Preview Content */,
+				7C4D4B4E262B0A19004B0038 /* Products */,
 			);
 			path = "IOS developer quiz";
 			sourceTree = "<group>";
@@ -67,6 +104,22 @@
 				7C4D4B57262B0A1C004B0038 /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		7C61F0AE262C5ABB009EED98 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				7C4D4B54262B0A1C004B0038 /* Assets.xcassets */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		7C90CC95262CCB2700060F62 /* Registration */ = {
+			isa = PBXGroup;
+			children = (
+				7C90CC8D262CC8C400060F62 /* RegistrationViewModel.swift */,
+			);
+			path = Registration;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -138,7 +191,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				7C0A712C262D86D100134708 /* CheckDTO.swift in Sources */,
+				7C0A7124262D813B00134708 /* RedistrationService.swift in Sources */,
+				7C90CC8E262CC8C400060F62 /* RegistrationViewModel.swift in Sources */,
 				7C4D4B53262B0A19004B0038 /* ContentView.swift in Sources */,
+				7C0A7128262D817F00134708 /* MockRegistrationService.swift in Sources */,
 				7C4D4B51262B0A19004B0038 /* IOS_developer_quizApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
